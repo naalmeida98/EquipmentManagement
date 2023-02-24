@@ -28,7 +28,9 @@
 
             <tr>
                 <td>{{ $e->id }}</td>
-                <td>{{ $e->nome }}</td>
+                <td>{{ $e->nome_cliente }}</td>
+                <td>{{ $e->marca }}</td>
+                <td>{{ $e->modelo }}</td>
                 @if(Auth::check())
                 <td>
                     <div class="row g-2">

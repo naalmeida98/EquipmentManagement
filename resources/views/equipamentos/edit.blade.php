@@ -14,8 +14,26 @@
                 <div class="row g-3">
 
                     <div class="col-sm-12">
-                        <label for="nome" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="" value="{{ $equipamento->nome }}" required="">
+                        <label for="nome_cliente" class="form-label">Nome do cliente</label>
+                        <input type="text" class="form-control" id="nome_cliente" name="nome_cliente" placeholder="" value="" required="">
+                    </div>
+
+                </div>
+
+                <div class="col-sm-12">
+                        <label for="marca" class="form-label">Marca</label>
+                        <select class="form-select" id="marca" name="marca" >
+                            <option value="select">Selecione</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Apple">Apple</option>
+                        </select>
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-sm-12">
+                        <label for="nome" class="form-label">Modelo</label>
+                        <input type="text" class="form-control" id="modelo" name="modelo" placeholder="" value="" required="">
                     </div>
 
                 </div>

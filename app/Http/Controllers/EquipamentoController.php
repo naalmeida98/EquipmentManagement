@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Factory\AppleNotebookFactory;
+use App\Http\Factory\NotebookFactory;
+use App\Http\Factory\SamsungNotebookFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Equipamento;
 use App\Http\Requests\StoreEquipamentoRequest;
 use App\Http\Requests\UpdateEquipamentoRequest;
+use Database\Factories\NotSamsungFactory;
 
 class EquipamentoController extends Controller
 {
@@ -20,7 +25,7 @@ class EquipamentoController extends Controller
      */
     public function index()
     {
-        $equipamentos = Equipamento::orderBy('nome')->paginate(20);
+        $equipamentos = Equipamento::orderBy('nome_cliente')->paginate(20);
         return view('equipamentos.index', ['equipamentos' => $equipamentos]);
     }
 
@@ -42,6 +47,14 @@ class EquipamentoController extends Controller
      */
     public function store(StoreEquipamentoRequest $request)
     {
+        if($request->marca == 'Samsung'){
+            $factory = new AppleNotebookFactory();
+            $notebook = $factory->createNotebook($request->modelo);
+        }else{
+            $factory = new SamsungNotebookFactory();
+            $notebook = $factory->createNotebook($request->modelo);
+        }
+
         Equipamento::create($request->all());
         // session()->flash('mensagem', 'Produto cadastrado com sucesso!');
         return redirect()->route('equipamentos.index');
