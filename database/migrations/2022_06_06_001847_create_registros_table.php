@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string("descricao");
             $table->date("datalimite");
-            $table->integer("tipo");
+            $table->string("tipo");
             $table->foreignId('equipamento_id')->constrained('equipamentos');
             $table->foreignId('user_id')->constrained('users');
         });

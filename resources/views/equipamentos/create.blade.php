@@ -31,7 +31,7 @@
                 <div class="row g-3">
 
                     <div class="col-sm-12">
-                        <label for="nome" class="form-label">Modelo</label>
+                        <label for="modelo" class="form-label">Modelo</label>
                         <input type="text" class="form-control" id="modelo" name="modelo" placeholder="" value="" required="">
                     </div>
 

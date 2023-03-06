@@ -47,7 +47,7 @@ class EquipamentoController extends Controller
      */
     public function store(StoreEquipamentoRequest $request)
     {
-        if($request->marca == 'Samsung'){
+        if($request->marca != 'Samsung'){
             $factory = new AppleNotebookFactory();
             $notebook = $factory->createNotebook($request->modelo);
         }else{

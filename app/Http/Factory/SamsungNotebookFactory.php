@@ -13,24 +13,6 @@ class SamsungNotebookFactory implements NotebookFactory {
     }
 }
 
-// class NotebookFactory
-// {
-//     public static function create($marca, $modelo)
-//     {
-//         switch ($marca) {
-//             case 'Samsung':
-//                 $notebook = new SamsungNotebook($marca, $modelo);
-//                 break;
-//             case 'Apple':
-//                 $notebook = new AppleNotebook($marca, $modelo);
-//                 break;
-//             default:
-//                 throw new Exception('Marca de notebook inválida');
-//         }
-
-//         return $notebook->build();
-//     }
-// }
 
 
 

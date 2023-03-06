@@ -24,7 +24,7 @@
                         <select class="form-select" id="equipamento_id" name="equipamento_id">
                             <option value="select">Selecione</option>
                             @foreach($equipamentos as $e)
-                                <option value="{{ $e->id }}">{{ $e->nome }}</option>
+                                <option value="{{ $e->id }}">{{ $e->nome_cliente }} - {{ $e->modelo }}</option>
                             @endforeach
                         </select>
                 </div>
@@ -79,7 +79,7 @@
             <tr>
                 <td>{{ $m->id }}</td>
                 <td>{{ $m->datalimite }}</td>
-                <td>{{ $m->equipamento->nome }}</td>
+                <td>{{ $m->equipamento->nome_cliente }} - {{ $m->equipamento->modelo }}</td>
                 <td>{{ $m->user->name }}</td>
                 <td>{{ $tipo_name }}</td>
                 <td>{{ $m->descricao }}</td>

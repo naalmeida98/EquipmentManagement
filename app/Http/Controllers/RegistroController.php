@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Adapter\ManutençãoAdapter;
+use App\Http\Facade\ManutençãoFacade;
 use App\Models\Registro;
 use App\Http\Requests\StoreRegistroRequest;
 use App\Http\Requests\UpdateRegistroRequest;
@@ -11,9 +13,16 @@ use App\Models\User;
 class RegistroController extends Controller
 {
 
-    public function __construct()
+    protected $manutencaoFacade;
+    protected $manutençãoAdapter;
+
+
+    public function __construct(ManutençãoFacade $manutencaoFacade,
+                                ManutençãoAdapter $manutençãoAdapter)
     {
         $this->middleware('auth')->except('index');
+        $this->manutencaoFacade = $manutencaoFacade;
+        $this->manutençãoAdapter = $manutençãoAdapter;
     }
     /**
      * Display a listing of the resource.
@@ -22,9 +31,7 @@ class RegistroController extends Controller
      */
     public function index()
     {
-        $manutencoes = Registro::orderBy('datalimite')->paginate(20);
-        // $manutencoes = Registro::get();
-
+        $manutencoes = $this->manutencaoFacade->indexManutenção();
         return view('manutencoes.index', ['manutencoes' => $manutencoes]);
     }
 
@@ -35,7 +42,8 @@ class RegistroController extends Controller
      */
     public function create()
     {
-        return view('manutencoes.create');
+        $equipamentos = $this->manutencaoFacade->createManutenção();
+        view('manutencoes.create',['equipamentos' => $equipamentos]);
     }
 
     /**
@@ -46,8 +54,9 @@ class RegistroController extends Controller
      */
     public function store(StoreRegistroRequest $request)
     {
-        Registro::create($request->all());
-        // session()->flash('mensagem', 'Produto cadastrado com sucesso!');
+        $type_adapted = $this->manutençãoAdapter->adapter_numberForType($request->input('tipo'));
+        $request->merge(['tipo' => $type_adapted]);
+        $this->manutencaoFacade->storeManutenção($request);
         return redirect()->route('manutencoes.index');
     }
 
@@ -59,7 +68,7 @@ class RegistroController extends Controller
      */
     public function show(Registro $registro)
     {
-        //
+
     }
 
     /**
@@ -89,7 +98,7 @@ class RegistroController extends Controller
         } else {
             session()->flash('mensagem-erro', 'Erro na atualização da manutenção!');
             return back()->withInput();
-            
+
         }
     }
 
@@ -109,4 +118,6 @@ class RegistroController extends Controller
             return back();
         }
     }
+
+
 }

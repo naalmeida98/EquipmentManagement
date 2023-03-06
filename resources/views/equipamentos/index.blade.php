@@ -16,6 +16,8 @@
             <tr>
                 <th>Código</th>
                 <th>Nome</th>
+                <th>Marca</th>
+                <th>Modelo</th>
                 @if(Auth::check())
                 <th>Ação</th>
                 @endif
