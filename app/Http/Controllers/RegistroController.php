@@ -7,8 +7,13 @@ use App\Http\Facade\ManutençãoFacade;
 use App\Models\Registro;
 use App\Http\Requests\StoreRegistroRequest;
 use App\Http\Requests\UpdateRegistroRequest;
+use App\Http\Strategy\CorretivaValorTotalStrategy;
+use App\Http\Strategy\PreventivaValorTotalStrategy;
+use App\Http\Strategy\UrgenteValorTotalStrategy;
 use App\Models\Equipamento;
+use App\Models\EstadoManutencao;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class RegistroController extends Controller
 {
@@ -54,6 +59,7 @@ class RegistroController extends Controller
      */
     public function store(StoreRegistroRequest $request)
     {
+        // dd($request);
         $type_adapted = $this->manutençãoAdapter->adapter_numberForType($request->input('tipo'));
         $request->merge(['tipo' => $type_adapted]);
         $this->manutencaoFacade->storeManutenção($request);
@@ -79,6 +85,9 @@ class RegistroController extends Controller
      */
     public function edit(Registro $registro)
     {
+        // $registro = Registro::findOrFail($registro);
+        dd($registro);
+        // dump('manutencao',$registro);
         return view('manutencoes.edit', ['manutencao' => $registro]);
     }
 
@@ -110,13 +119,55 @@ class RegistroController extends Controller
      */
     public function destroy(Registro $registro)
     {
-        if($registro->delete()) {
-            session()->flash('mensagem', 'Mnutenção excluída com sucesso!');
+        if($registro->estadoManutencaos()->delete() && $registro->delete()) {
+            session()->flash('mensagem', 'Manutenção excluída com sucesso!');
             return redirect()->route('manutencoes.index');
         } else {
-            session()->flash('mensagem-erro', 'Erro na exclusão do manutenção!');
+            session()->flash('mensagem-erro', 'Erro na exclusão da manutenção!');
             return back();
         }
+    }
+
+    public function mudarEstado(Request $request)
+    {
+        // dd($request);
+        $registro_id = $request->input('registro_id');
+        $novoEstado = $request->input('estado');
+        $estado = new EstadoManutencao();
+        $estado->registro_id = $registro_id;
+        $estado->estado = $novoEstado;
+        $estado->data = now();
+        $estado->save();
+        $manutencoes = Registro::orderBy('datalimite')->paginate(20);
+        return view('manutencoes.index', ['manutencoes' => $manutencoes]);
+    }
+
+
+    public function calcularValor(Request $request)
+    {
+        $registro_id = $request->input('registro_id');
+        $base_value = $request->input('base_value');
+        $tipo = $request->input('tipo');
+        switch ($tipo) {
+            case 'Preventiva':
+                $manutencao_tipo = new PreventivaValorTotalStrategy();
+                break;
+            case 'Corretiva':
+                $manutencao_tipo = new CorretivaValorTotalStrategy();
+                break;
+            case 'Urgente':
+                $manutencao_tipo = new UrgenteValorTotalStrategy();
+                break;
+            default:
+                throw new \InvalidArgumentException('Tipo de manutenção inválido');
+        }
+
+        $valorTotal = $manutencao_tipo->calcularValorTotal($base_value);
+
+        Registro::where('id', $registro_id)->update(['value_total' => $valorTotal]);
+        $registro = Registro::find($registro_id);
+
+        return view('manutencoes.command', ['m' => $registro]);
     }
 
 

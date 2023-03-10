@@ -20,6 +20,8 @@
                 <th>Usuário</th>
                 <th>Tipo da Manutenção</th>
                 <th>Descrição do problema</th>
+                <th>Estado Atual</th>
+                <th>Valor Total</th>
                 @if(Auth::check())
                 <th>Ação</th>
                 @endif
@@ -29,9 +31,12 @@
         <tbody>
 
             @foreach($manutencoes as $m)
-            @php
 
+            @php
+                $estadoAtual = $m->ultimoEstado()->orderBy('data', 'desc')->first();
+                $estadoAtual = isset($estadoAtual->estado) ? $estadoAtual->estado : '';
             @endphp
+
 
             <tr>
                 <td>{{ $m->id }}</td>
@@ -40,14 +45,24 @@
                 <td>{{ $m->user->name }}</td>
                 <td>{{ $m->tipo }}</td>
                 <td>{{ $m->descricao }}</td>
+                <td>{{ $estadoAtual }}</td>
+                <td>R$ {{ $m->value_total }} </td>
                 @if(Auth::check())
                 <td>
                     <div class="d-flex flex-row g-2">
+
                         <div class="p-2">
-                            <a href="{{ route('manutencoes.edit', $m->id) }}" class="btn btn-primary">Editar</a>
+                            <a href="{{ route('registros.close_commands', $m->id) }}" class="btn btn-primary">Fechar comanda</a>
+                        </div>
+
+                        <div class="p-2">
+                            <a href="{{ route('registros.edit_estado', [$m->id, $estadoAtual]) }}" class="btn btn-primary">Mudar estado</a>
                         </div>
                         <div class="p-2">
-                            <form action="{{ route('manutencoes.destroy', $m->id) }}" method="post">
+                            <a href="{{ route('edit_new', $m->id) }}" class="btn btn-primary">Editar</a>
+                        </div>
+                        <div class="p-2">
+                            <form action="{{ route('destroy_new', $m->id) }}" method="post">
 
                                 @csrf
                                 @method('DELETE')

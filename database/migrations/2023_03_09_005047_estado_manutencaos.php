@@ -13,15 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('registros', function (Blueprint $table) {
+        Schema::create('estado_manutencaos', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string("descricao");
-            $table->date("datalimite");
-            $table->string("tipo");
-            $table->float("value_total")->default(0);
-            $table->foreignId('equipamento_id')->constrained('equipamentos');
-            $table->foreignId('user_id')->constrained('users');
+            $table->string("estado");
+            $table->date("data");
+            $table->foreignId('registro_id')->constrained('registros')->references('id')->on('registros')->onDelete('cascade');
         });
     }
 
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('registros');
+        //
     }
 };

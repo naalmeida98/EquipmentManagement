@@ -5,6 +5,7 @@ namespace App\Http\Facade;
 use App\Http\Requests\StoreRegistroRequest;
 use App\Http\Requests\UpdateRegistroRequest;
 use App\Models\Equipamento;
+use App\Models\EstadoManutencao;
 use App\Models\Registro;
 
 class ManutençãoFacade
@@ -22,7 +23,14 @@ class ManutençãoFacade
 
     public function storeManutenção(StoreRegistroRequest $request)
     {
-        Registro::create($request->all());
+        // dd($request);
+        $registro = Registro::create($request->all());
+        $estado = new EstadoManutencao();
+        $estado->registro_id = $registro->id;
+        $estado->estado = 'Aberto';
+        $estado->data = now();
+        $estado->save();
+
     }
 
     public function createManutenção()

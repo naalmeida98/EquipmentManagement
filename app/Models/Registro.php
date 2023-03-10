@@ -10,7 +10,7 @@ class Registro extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['descricao','datalimite','tipo','equipamento_id','user_id'];
+    protected $fillable = ['descricao','datalimite','tipo','equipamento_id','user_id', 'registro_id'];
 
     public function equipamento() {
         return $this->belongsTo(Equipamento::class);
@@ -36,4 +36,14 @@ class Registro extends Model
     }
 
     protected $appends = ['equipamento_nome','user_nome'];
+
+    public function estadoAtual()
+    {
+        return $this->hasMany(EstadoManutencao::class, 'registro_id');
+    }
+
+    public function ultimoEstado()
+    {
+        return $this->estadoAtual()->orderBy('data', 'desc');
+    }
 }
