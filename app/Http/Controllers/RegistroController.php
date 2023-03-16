@@ -133,6 +133,7 @@ class RegistroController extends Controller
         // dd($request);
         $registro_id = $request->input('registro_id');
         $novoEstado = $request->input('estado');
+        // $novoEstado = $this->manutençãoAdapter->adapter_TypeForNumber($novoEstado);
         $estado = new EstadoManutencao();
         $estado->registro_id = $registro_id;
         $estado->estado = $novoEstado;

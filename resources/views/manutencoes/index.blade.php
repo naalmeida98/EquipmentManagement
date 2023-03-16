@@ -33,10 +33,9 @@
             @foreach($manutencoes as $m)
 
             @php
-                $estadoAtual = $m->ultimoEstado()->orderBy('data', 'desc')->first();
+                $estadoAtual = $m->ultimoEstado()->orderBy('updated_at', 'desc')->first();
                 $estadoAtual = isset($estadoAtual->estado) ? $estadoAtual->estado : '';
             @endphp
-
 
             <tr>
                 <td>{{ $m->id }}</td>
